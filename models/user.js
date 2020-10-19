@@ -30,11 +30,11 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    mallAddress: {
+    mailAddress: {
       type:DataTypes.STRING,
       validate:{
         isEmail : {
-          msg: "メールアドレスは必ず入力してください。"
+          msg: "メールアドレスでの入力をお願いします。"
         }
       }
     },

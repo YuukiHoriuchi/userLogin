@@ -14,7 +14,7 @@ module.exports = {
       passWord: {
         type: Sequelize.STRING
       },
-      mallAddress: {
+      mailAddress: {
         type: Sequelize.STRING
       },
       createdAt: {

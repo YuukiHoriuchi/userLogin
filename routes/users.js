@@ -52,24 +52,37 @@ router.post('/', (req, res, next) => {
 });
 
 router.get('/add',(req, res, next)=> {
+  var secret = tokens.secretSync();
+  var token = tokens.create(secret);
+  req.session._csrf = secret;
+  res.cookie('_csrf', token);
+  req.session.now_url="/users/add";
   var data = {
     title: 'Users/Add',
     form: new db.User(),
     err:null
   }
-  res.render('users/add', data);
+  res.render('users', data);
 });
 
 router.post('/add',(req, res, next)=> {
+  var request = req;
+  var response = res;
+  var token = req.cookies._csrf;
+  var secret = req.session._csrf;
+  if(tokens.verify(secret, token) === false)
+  {
+    throw new Error('Invalid Token');
+  }
   const form = {
     name: req.body.name,
-    pass: req.body.passWord,
-    mail: req.body.mailAddress,
+    passWord: req.body.passWord,
+    mailAddress: req.body.mailAddress,
   };
   db.sequelize.sync()
     .then(() => db.User.create(form)
     .then(usr=> {
-      res.redirect('/users')
+      res.redirect('users')
     })
     .catch(err=> {
       var data = {
@@ -139,7 +152,7 @@ router.get('/forget', (req, res, next) => {
   var data = {
     title:'パスワード変更',
     form:{name:'',password:'',birthday:''},
-    content:'誕生日をキーとしてパスワードを変更します。',
+    content:'登録したメールアドレスで認証してパスワードを変更します。',
   }
   res.render('users/forget', data);
 });

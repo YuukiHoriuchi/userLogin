@@ -12,38 +12,28 @@
 </head>
 
 <body class="container">
+
     <header>
         <h1 class="display-4"><%= title %></h1>
     </header>
     <div role="main">
         <ol class="text-danger">
-        <% if (err!=null) { for (let i in err.errors) { %><li><%= err.errors[i].message %></li><% }} %>
+            <% if (err!=null) { for (let i in err.errors) { %><li><%= err.errors[i].message %></li><% }} %>
         </ol>
         <form method="post" action="/users/add">
-            <div class="form-group">
-                <label for="name">NAME</label>
-                <input type="text" name="name" id="name" value="<%=form.name %>" class="form-control">
-            <ul class="text-danger">
-            <% if (err!=null) { for (let i in err.get("name")) { %><li><%= err.get("name")[i].message %></li><% }} %>
-            </ul>
-            </div>
-
-            <div class="form-group">
-                <label for="pass"">PASSWORD</label>
-                <input type="passWord" name="passWord" id="passWord" value="<%=form.passWord %>" class="form-control">
-                <ul class="text-danger">
-                    <% if (err!=null) { for (let i in err.get("passWord")) { %><li><%= err.get("passWord")[i].message %></li><% }} %>
-                </ul>
-            </div>
-            
-            <div class="form-group">
-                <label for="mail">MailAddress</label>
-                <input type="text" name="mailAddress" id="mailAddress" value="<%=form.mailAddress %>" class="form-control">
-            <ul class="text-danger">
-                <% if (err!=null) { for (let i in err.get("mailAddress")) { %><li><%= err.get("mailAddress")[i].message %></li><% }} %>
-            </ul>
-            </div>
-            <input type="submit" value="作成" class="btn btn-primary">
+        <div class="form-group">
+            <label for="name">NAME</label>
+            <input type="text" name="name" id="name" value="<%=form.name %>" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="passWord">PASSWORD</label>
+            <input type="passWord" name="passWord" id="passWord" value="<%=form.passWord %>" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="mailAddress">MAILADDRESS</label>
+            <input type="text" name="mailAddress" id="mailAddress" value="<%=form.mailAddress %>" class="form-control">
+        </div>
+        <input type="submit" value="作成" class="btn btn-primary">
         </form>
     </div>
 </body>
