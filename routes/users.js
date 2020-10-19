@@ -151,8 +151,8 @@ router.get('/forget', (req, res, next) => {
   req.session.now_url="users/forget";
   var data = {
     title:'パスワード変更',
-    form:{name:'',password:'',birthday:''},
-    content:'登録したメールアドレスで認証してパスワードを変更します。',
+    form:{name:'',passWord:'',mailAddress:''},
+    content:'登録したメールアドレスで認証し、その後パスワードを変更します。',
   }
   res.render('users/forget', data);
 });
@@ -163,17 +163,14 @@ router.post('/forget', (req, res, next) => {
   var secret = req.session._csrf;
   if(tokens.verify(secret, token) === false)
   {
-  throw new Error('Invalid Token');
+    throw new Error('Invalid Token');
   }
-  req.check('name','名前 は必ず入力して下さい。').notEmpty();
-  req.check('password','パスワード は必ず入力して下さい。').notEmpty();
-  req.check('birthday','誕生日 は必ず入力して下さい。').notEmpty();
   req.getValidationResult().then((result) => {
     if (!result.isEmpty()) {
       var content = '';
       var result_arr = result.array();
       for(var n in result_arr) {
-        content +=  + result_arr[n].msg
+        content += + result_arr[n].msg
       }
       var data = {
         title: 'パスワード変更',
