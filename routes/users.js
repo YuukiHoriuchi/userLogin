@@ -32,47 +32,27 @@ router.post('/', (req, res, next) => {
     name: req.body.name,
     passWord: req.body.passWord,
   };
-  db.sequelize.aync()
-    .then(() => )
-
-  req.getValidationResult().then((result) => {
-    if (!result.isEmpty()) {
-      var content = '';
-      var result_arr = result.array();
-      for(var n in result_arr) {
-        content += result_arr[n].msg
+  db.sequelize.findOne({
+    where:{
+      loginName:req.body.loginName,
+      passWord:req.body.passWord,
+    }
+  }).then(usr=> (
+    if(usr != null) {
+      req.session.login = usr;
+      let back = req.session.back;
+      if (back == null){
+        back = '/';
       }
-
-      var data = {
-        title: 'ログイン',
-        content:content,
-        form: req.body,
-      }
-      response.render('users/login', data);
+      res.redirect(back);
     } else {
-      var nm = req.body.name;
-      var pw = req.body.password;
-      console.log(db.user);
-      db.user.findAll({
-        where:{
-          name: nm,
-          password: pw
-        }}).then((model) => {
-          if (model == null){
-            var data = {
-              title:'ログイン',
-              content:'名前またはパスワードが違います。',
-              form: req.body,
-          };
-          response.render('users/login',data);
-          } else {
-            console.log(model[0]);
-            request.session.login = model[0];
-            res.redirect('/');
-          }
-        });
+      var data = {
+        title : 'User/Login',
+        content : '名前かパスワードに問題があります。ご確認ください。'
       }
-  })
+      res.render('users/login', data);
+    }
+  });
 });
 
 router.get('/add',(req, res, next)=> {
