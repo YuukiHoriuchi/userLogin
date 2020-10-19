@@ -1,0 +1,52 @@
+<html>
+<head>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <div class="card-body">
+            <div class="form-group row">
+                <label for="email" class="col-md-4 col-form-label text-md-right">メールアドレス</label>
+            <div class="col-md-6">
+                <input type="email" class="form-control" v-model="email">
+                <div class="alert alert-danger" v-if="error" v-text="error"></div>
+            </div>
+        </div>
+        <div class="form-group row mb-0">
+            <div class="col-md-6 offset-md-4">
+                <button type="submit" class="btn btn-primary" @click="onSubmit">パスワード再発行リンクを送信する</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+    <script>
+
+    new Vue({
+        el: '#app',
+        data: {
+        email: '',
+        error: ''
+        },
+        methods: {
+        onSubmit() {
+            this.error = '';
+            axios.post('/password/email', { email: this.email })
+                .then(response => {
+                if(response.data.result) {
+                    alert('入力されたメールアドレスにメッセージ送信しました。');
+                }
+            })
+            .catch(error => {
+                const errors = error.response.data.errors;
+                errors.every(error => {
+                this.error = error.msg;
+                return false;
+                });
+            });
+        }
+        }
+    });
+    </script>
+</body>
+</html>
