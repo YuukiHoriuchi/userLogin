@@ -1,0 +1,26 @@
+<title><%= title %></title>
+
+<%= content %>
+<form method="post" action="/users/forget">
+<table>
+    <tr>
+        <th>MailAddress</th>
+        <td><input name="mailAddress"><%= form.mailAddress %></td>
+    </tr>
+    <tr>
+        <th>ログイン名</th>
+        <td><input type="text" name="name"
+            value="<%= form.name %>"></td>
+    </tr>
+    <tr>
+        <th>Change Password</th>
+        <td><input type="passWord" name="passWord"
+            value="<%= form.passWord %>"></td>
+    </tr>
+
+    <tr>
+        <th></th>
+        <td><input type="submit" value="作成"></td>
+    </tr>
+</table>
+</form>

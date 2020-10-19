@@ -1,0 +1,25 @@
+<title><%= title %></title>
+
+<%= content %>
+<form method="post" action="/users/add">
+<table>
+    <tr>
+        <th>LoginName</th>
+        <td><input type="text" name="loginName"
+            value="<%= form.loginName %>"></td>
+    </tr>
+    <tr>
+        <th>PassWord</th>
+        <td><input type="PassWord" name="password"
+            value="<%= form.passWord %>"></td>
+    </tr>
+    <tr>
+        <th>MailAddress</th>
+        <td><input name="mailAddress"><%= form.mailAddress %></td>
+    </tr>
+    <tr>
+        <th></th>
+        <td><input type="submit" value="作成"></td>
+    </tr>
+</table>
+</form>

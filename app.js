@@ -18,6 +18,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(validator());
+
+var session_opt = {
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 60 * 60 * 1000 }
+};
+app.use(session(session_opt));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
