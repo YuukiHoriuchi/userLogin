@@ -30,25 +30,17 @@
 
             <div class="form-group">
                 <label for="pass"">PASSWORD</label>
-                <input type=" password" name="pass" id="pass" value="<%=form.pass %>" class="form-control">
+                <input type="passWord" name="passWord" id="passWord" value="<%=form.passWord %>" class="form-control">
                 <ul class="text-danger">
-                    <% if (err!=null) { for (let i in err.get("pass")) { %><li><%= err.get("pass")[i].message %></li><% }} %>
+                    <% if (err!=null) { for (let i in err.get("passWord")) { %><li><%= err.get("passWord")[i].message %></li><% }} %>
                 </ul>
             </div>
             
             <div class="form-group">
-                <label for="mail">MAIL</label>
-                <input type="text" name="mail" id="mail" value="<%=form.mail %>" class="form-control">
+                <label for="mail">MailAddress</label>
+                <input type="text" name="mailAddress" id="mailAddress" value="<%=form.mailAddress %>" class="form-control">
             <ul class="text-danger">
-                <% if (err!=null) { for (let i in err.get("mail")) { %><li><%= err.get("mail")[i].message %></li><% }} %>
-            </ul>
-            </div>
-
-            <div class="form-group">
-                <label for="age">AGE</label>
-                <input type="number" name="age" id="age" value="<%=form.age %>" class="form-control">
-            <ul class="text-danger">
-                <% if (err!=null) { for (let i in err.get("age")) { %><li><%= err.get("age")[i].message %></li><% }} %>
+                <% if (err!=null) { for (let i in err.get("mailAddress")) { %><li><%= err.get("mailAddress")[i].message %></li><% }} %>
             </ul>
             </div>
             <input type="submit" value="作成" class="btn btn-primary">

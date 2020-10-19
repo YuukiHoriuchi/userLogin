@@ -28,17 +28,13 @@ router.post('/', (req, res, next) => {
   {
     throw new Error('Invalid Token');
   }
-  const form = {
-    name: req.body.name,
-    passWord: req.body.passWord,
-  };
-  db.sequelize.findOne({
+  db.User.findOne({
     where:{
-      loginName:req.body.loginName,
+      loginName:req.body.name,
       passWord:req.body.passWord,
     }
-  }).then(usr=> (
-    if(usr != null) {
+  }).then(usr=>{
+    if (usr != null) {
       req.session.login = usr;
       let back = req.session.back;
       if (back == null){
@@ -47,12 +43,12 @@ router.post('/', (req, res, next) => {
       res.redirect(back);
     } else {
       var data = {
-        title : 'User/Login',
-        content : '名前かパスワードに問題があります。ご確認ください。'
+        title:'Users/Login',
+        content:'名前かパスワードに問題があります。再度入力下さい。'
       }
       res.render('users/login', data);
     }
-  });
+  })
 });
 
 router.get('/add',(req, res, next)=> {
@@ -66,7 +62,7 @@ router.get('/add',(req, res, next)=> {
 
 router.post('/add',(req, res, next)=> {
   const form = {
-    name: req.body.loginName,
+    name: req.body.name,
     pass: req.body.passWord,
     mail: req.body.mailAddress,
   };
@@ -100,7 +96,7 @@ router.get('/edit',(req, res, next)=> {
 router.post('/edit',(req, res, next)=> {
   db.sequelize.sync()
   .then(() => db.User.update({
-    name: req.body.loginName,
+    name: req.body.name,
     pass: req.body.passWord,
     mail: req.body.mailAddress,
   },
