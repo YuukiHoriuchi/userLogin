@@ -30,7 +30,7 @@ router.post('/', (req, res, next) => {
   }
   db.User.findOne({
     where:{
-      loginName:req.body.name,
+      name:req.body.name,
       passWord:req.body.passWord,
     }
   }).then(usr=>{
