@@ -143,65 +143,6 @@ router.post('/delete',(req, res, next)=> {
 });
 
 
-router.get('/forget', (req, res, next) => {
-  var secret = tokens.secretSync();
-  var token = tokens.create(secret);
-  req.session._csrf = secret;
-  res.cookie('_csrf', token);
-  req.session.now_url="users/forget";
-  var data = {
-    title:'パスワード変更',
-    form:{name:'',passWord:'',mailAddress:''},
-    content:'登録したメールアドレスで認証し、その後パスワードを変更します。',
-  }
-  res.render('users/forget', data);
-});
-router.post('/forget', (req, res, next) => {
-  var request = req;
-  var response = res;
-  var token = req.cookies._csrf;
-  var secret = req.session._csrf;
-  if(tokens.verify(secret, token) === false)
-  {
-    throw new Error('Invalid Token');
-  }
-  req.getValidationResult().then((result) => {
-    if (!result.isEmpty()) {
-      var content = '';
-      var result_arr = result.array();
-      for(var n in result_arr) {
-        content += + result_arr[n].msg
-      }
-      var data = {
-        title: 'パスワード変更',
-        content:content,
-        form: req.body,
-      }
-      response.render('users/add', data);
-      } else {
-        request.session.login = null;
-        var nm = req.body.name;
-        var pw = req.body.password;
-        var bd = req.body.birthday;
-        db.user.findAll({where:{
-          name: nm,
-          birthday: bd
-          }}).then((model) => {
-          if (model[0] == null){
-            var data = {
-              title:'パスワード変更',
-              content:'誕生日が違うためパスワード変更できません',
-              form: req.body,
-              };
-              response.render('users/forget',data);
-              } else {
-              model[0].set({password:pw}).save().then(()=>{
-              response.redirect('/');
-              });
-            }});
-      }
-  });
-});
 
 
 module.exports = router;

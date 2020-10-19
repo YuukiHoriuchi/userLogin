@@ -196,7 +196,7 @@ app.post('/password/reset', [passwordResetValidationRules], (req, res) => {
 // 直接アクセス
 app.use(express.static('public'));
 
-// 5000番ポートで待機
+// 3000番ポートで待機
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`${PORT}番のポートで待機中です...`);
