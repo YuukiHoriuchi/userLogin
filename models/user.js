@@ -14,9 +14,24 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   User.init({
-    name: DataTypes.STRING,
-    passWord: DataTypes.STRING,
-    mallAddress: DataTypes.STRING
+    name: {
+      type:DataTypes.STRING,
+      validate:{
+        notEmpty : ture
+      }
+    },
+    passWord: {
+      type:DataTypes.STRING,
+      validate:{
+        notEmpty : ture
+      }
+    },
+    mallAddress: {
+      type:DataTypes.STRING,
+      validate:{
+        isEmail : ture
+      }
+    },
   }, {
     sequelize,
     modelName: 'User',
