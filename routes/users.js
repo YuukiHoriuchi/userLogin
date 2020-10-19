@@ -62,7 +62,7 @@ router.get('/add',(req, res, next)=> {
     form: new db.User(),
     err:null
   }
-  res.render('users', data);
+  res.render('users/add', data);
 });
 
 router.post('/add',(req, res, next)=> {
@@ -82,6 +82,7 @@ router.post('/add',(req, res, next)=> {
   db.sequelize.sync()
     .then(() => db.User.create(form)
     .then(usr=> {
+      console.log('ここまできました。')
       res.redirect('users')
     })
     .catch(err=> {
@@ -90,6 +91,7 @@ router.post('/add',(req, res, next)=> {
         form: form,
         err: err
       }
+      console.log(data);
       res.render('users/add', data);
     })
     )
