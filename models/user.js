@@ -17,19 +17,25 @@ module.exports = (sequelize, DataTypes) => {
     name: {
       type:DataTypes.STRING,
       validate:{
-        notEmpty : ture
+        notEmpty : {
+          msg: "名前は必ず入力してください。"
+        }
       }
     },
     passWord: {
       type:DataTypes.STRING,
       validate:{
-        notEmpty : ture
+        notEmpty : {
+          msg: "パスワードは必ず入力してください。"
+        }
       }
     },
     mallAddress: {
       type:DataTypes.STRING,
       validate:{
-        isEmail : ture
+        isEmail : {
+          msg: "メールアドレスは必ず入力してください。"
+        }
       }
     },
   }, {

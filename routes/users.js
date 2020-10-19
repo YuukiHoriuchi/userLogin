@@ -75,6 +75,85 @@ router.post('/', (req, res, next) => {
   })
 });
 
+router.get('/add',(req, res, next)=> {
+  var data = {
+    title: 'Users/Add',
+    form: new db.User(),
+    err:null
+  }
+  res.render('users/add', data);
+});
+
+router.post('/add',(req, res, next)=> {
+  const form = {
+    name: req.body.loginName,
+    pass: req.body.passWord,
+    mail: req.body.mailAddress,
+  };
+  db.sequelize.sync()
+    .then(() => db.User.create(form)
+    .then(usr=> {
+      res.redirect('/users')
+    })
+    .catch(err=> {
+      var data = {
+        title: 'Users/Add',
+        form: form,
+        err: err
+      }
+      res.render('users/add', data);
+    })
+    )
+});
+
+router.get('/edit',(req, res, next)=> {
+  db.User.findByPk(req.query.id)
+  .then(usr => {
+    var data = {
+      title: 'Users/Edit',
+      form: usr
+    }
+    res.render('users/edit', data);
+  });
+});
+
+router.post('/edit',(req, res, next)=> {
+  db.sequelize.sync()
+  .then(() => db.User.update({
+    name: req.body.loginName,
+    pass: req.body.passWord,
+    mail: req.body.mailAddress,
+  },
+  {
+    where:{id:req.body.id}
+  }))
+  .then(usr => {
+    res.redirect('/users');
+  });
+});
+
+router.get('/delete',(req, res, next)=> {
+  db.User.findByPk(req.query.id)
+  .then(usr => {
+    var data = {
+      title: 'Users/Delete',
+      form: usr
+    }
+    res.render('users/delete', data);
+  });
+});
+
+router.post('/delete',(req, res, next)=> {
+  db.sequelize.sync()
+  .then(() => db.User.destroy({
+    where:{id:req.body.id}
+  }))
+  .then(usr => {
+    res.redirect('/users');
+  });
+});
+
+
 router.get('/forget', (req, res, next) => {
   var secret = tokens.secretSync();
   var token = tokens.create(secret);
@@ -138,57 +217,5 @@ router.post('/forget', (req, res, next) => {
   });
 });
 
-
-router.get('/add', (req, res, next) => {
-   var secret = tokens.secretSync();
-   var token = tokens.create(secret);
-   req.session._csrf = secret;
-   res.cookie('_csrf', token);
-   req.session.now_url="/users/add";
-   var data = {
-      title:'ユーザ追加',
-      form:{name:'',password:'',birthday:''},
-      content:'',
-   }
-   res.render('users/add', data);
-});
-
-router.post('/add', (req, res, next) => {
-   var request = req;
-   var response = res;
-   var token = req.cookies._csrf;
-   var secret = req.session._csrf;
-   if(tokens.verify(secret, token) === false)
-   {
-      throw new Error('Invalid Token');
-   }
-   req.check('name','名前 は必ず入力して下さい。').notEmpty();
-   req.check('password','パスワード は必ず入力して下さい。').notEmpty();
-   req.check('birthday','誕生日 は必ず入力して下さい。').notEmpty();
-   req.getValidationResult().then((result) => {
-      if (!result.isEmpty()) {
-         var content = '';
-         var result_arr = result.array();
-         for(var n in result_arr) {
-            content +=  + result_arr[n].msg
-         }
-         var data = {
-            title: 'ユーザ追加',
-            content:content,
-            form: req.body,
-         }
-         response.render('users/add', data);
-      } else {
-         request.session.login = null;
-         db.user.create({
-                name: req.body.name,
-                password: req.body.password,
-                birthday:req.body.birthday
-             }).then((model) => {
-            response.redirect('/');
-         });
-      }
-   });
-});
 
 module.exports = router;

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body class="container">
+    <header>
+        <h1 class="display-4">
+        <%= title %></h1>
+    </header>
+    <div role="main">
+        <form method="post" action="/users/edit">
+        <input type="hidden" name="id" value="<%= form.id %>">
+        <div class="form-group">
+            <label for="name">LoginName</label>
+            <input type="text" name="loginName" id="loginName" class="form-control" value="<%= form.loginName %>">
+        </div>
+        <div class="form-group">
+            <label for="passWord">PassWord</label>
+            <input type="text" name="passWord" id="passWord" class="form-control" value="<%= form.passWord %>">
+        </div>
+        <div class="form-group">
+            <label for="mailAddress">MailAddress</label>
+            <td><input type="text" name="mailAdress" id="mail" class="form-control" value="<%= form.mailAddress %>">
+        </div>
+        <input type="submit" value="更新" class="btn btn-primary">
+        </form>
+    </div>
+</body>
+
+</html>
