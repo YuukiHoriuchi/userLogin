@@ -14,6 +14,7 @@ router.get('/login', (req, res, next) => {
   var data = {
       title:'User/Login',
       form:{name:'',password:''},
+      content:'',
   }
   res.render('users/login', data);
 });
@@ -35,8 +36,9 @@ router.post('/login', (req, res, next) => {
       res.redirect(back);
     } else {
       var data = {
-        title:'Users/Login',
-        content:'名前かパスワードに問題があります。再度入力下さい。'
+        title:'User/Login',
+        content:'名前かパスワードに入力間違いがあります。再度入力下さい。',
+        form:'',
       }
       res.render('users/login', data);
     }
