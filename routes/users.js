@@ -44,9 +44,10 @@ router.post('/', (req, res, next) => {
     } else {
       var data = {
         title:'Users/Login',
-        content:'名前かパスワードに問題があります。再度入力下さい。'
+        content:'ログイン情報が間違っています。再度入力をお願いします。',
       }
-      res.render('users/login', data);
+      console.log('data');
+      res.render('/users', data);
     }
   })
 });
@@ -82,8 +83,7 @@ router.post('/add',(req, res, next)=> {
   db.sequelize.sync()
     .then(() => db.User.create(form)
     .then(usr=> {
-      console.log('ここまできました。')
-      res.redirect('users')
+      res.redirect('/users')
     })
     .catch(err=> {
       var data = {
@@ -91,7 +91,6 @@ router.post('/add',(req, res, next)=> {
         form: form,
         err: err
       }
-      console.log(data);
       res.render('users/add', data);
     })
     )
