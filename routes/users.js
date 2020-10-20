@@ -174,36 +174,38 @@ router.post('/forget', (req, res, next) => {
         var content = '';
         var result_arr = result.array();
         for(var n in result_arr) {
-          content +=  + result_arr[n].msg
+          content += + result_arr[n].msg
         }
         var data = {
           title: 'User/Forget',
-          content:content,
+          content:'名前、メールアドレスが入力されていません。入力をお願いします。',
           form: req.body,
         }
-        response.render('users/login', data);
-    } else {
+        console.log(data);
+        response.render('users/forget', data);
+      } else {
         request.session.login = null;
         var name = req.body.name;
         var passWord = req.body.passWord;
         var mailAddress = req.body.mailAddress;
         db.User.findAll({where:
-          {
-            name: name,
-            mailAddress: mailAddress
-          }}).then((model) => {
-            if (model[0] == null){
-              var data = {
-                title:'User/Forget',
-                content:'メールアドレスが違うため、認証することができません',
-                form: req.body,
-              };
-              esponse.render('users/forget',data);
-              } else {
-                model[0].set({passWord:passWord}).save().then(()=>{
-                  response.redirect('/users/login');
-                });
-            }});
+        {
+          name: name,
+          mailAddress: mailAddress
+        }}).then((model) => {
+          if (model[0] == null){
+            var data = {
+              title:'User/Forget',
+              content:'メールアドレスが違うため、認証することができません',
+              form: req.body,
+            };
+            console.log(data);
+            response.render('users/forget',data);
+          } else {
+            model[0].set({passWord:passWord}).save().then(()=>{
+            response.redirect('/users/login');
+            });
+          }});
     }
   });
 });
