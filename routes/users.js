@@ -112,7 +112,7 @@ router.post('/edit',(req, res, next)=> {
     where:{id:req.body.id}
   }))
   .then(usr => {
-    res.redirect('/users/edit');
+    res.redirect('/users/login');
   });
 });
 
@@ -133,7 +133,7 @@ router.post('/delete',(req, res, next)=> {
     where:{id:req.body.id}
   }))
   .then(usr => {
-    res.redirect('/users');
+    res.redirect('/users/login');
   });
 });
 
