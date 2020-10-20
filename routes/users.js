@@ -144,5 +144,68 @@ router.post('/delete',(req, res, next)=> {
   });
 });
 
+router.get('/forget', (req, res, next) => {
+  var secret = tokens.secretSync();
+  var token = tokens.create(secret);
+  req.session._csrf = secret;
+  res.cookie('_csrf', token);
+  req.session.now_url="users/forget";
+  var data = {
+    title:'User/Forget',
+    form:{name:'',passWord:'',mailAddress:''},
+    content:'メールアドレスで認証してパスワードを変更します。',
+  }
+  res.render('users/forget', data);
+});
+router.post('/forget', (req, res, next) => {
+  var request = req;
+  var response = res;
+  var token = req.cookies._csrf;
+  var secret = req.session._csrf;
+  if(tokens.verify(secret, token) === false)
+  {
+    throw new Error('Invalid Token');
+  }
+  req.check('name','名前 は必ず入力して下さい。').notEmpty();
+  req.check('passWord','パスワード は必ず入力して下さい。').notEmpty();
+  req.check('mailAddress','メールアドレス は必ず入力して下さい。').notEmpty();
+  req.getValidationResult().then((result) => {
+    if (!result.isEmpty()) {
+        var content = '';
+        var result_arr = result.array();
+        for(var n in result_arr) {
+          content +=  + result_arr[n].msg
+        }
+        var data = {
+          title: 'User/Forget',
+          content:content,
+          form: req.body,
+        }
+        response.render('users/login', data);
+    } else {
+        request.session.login = null;
+        var name = req.body.name;
+        var passWord = req.body.passWord;
+        var mailAddress = req.body.mailAddress;
+        db.User.findAll({where:
+          {
+            name: name,
+            mailAddress: mailAddress
+          }}).then((model) => {
+            if (model[0] == null){
+              var data = {
+                title:'User/Forget',
+                content:'メールアドレスが違うため、認証することができません',
+                form: req.body,
+              };
+              esponse.render('users/forget',data);
+              } else {
+                model[0].set({passWord:passWord}).save().then(()=>{
+                  response.redirect('/users/login');
+                });
+            }});
+    }
+  });
+});
 
 module.exports = router;
