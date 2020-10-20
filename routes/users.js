@@ -10,7 +10,7 @@ router.get('/login', (req, res, next) => {
   var token = tokens.create(secret);
   req.session._csrf = secret;
   res.cookie('_csrf', token);
-  req.session.now_url = "/";
+  req.session.sessionUrl = "users/login";
   var data = {
       title:'User/Login',
       form:{name:'',password:''},
@@ -58,7 +58,7 @@ router.get('/add',(req, res, next)=> {
   var token = tokens.create(secret);
   req.session._csrf = secret;
   res.cookie('_csrf', token);
-  req.session.now_url="/users/add";
+  req.session.sessionUrl="/users/add";
   var data = {
     title: 'Users/Add',
     form: new db.User(),
@@ -149,7 +149,7 @@ router.get('/forget', (req, res, next) => {
   var token = tokens.create(secret);
   req.session._csrf = secret;
   res.cookie('_csrf', token);
-  req.session.now_url="users/forget";
+  req.session.sessionUrl="users/forget";
   var data = {
     title:'User/Forget',
     form:{name:'',passWord:'',mailAddress:''},
