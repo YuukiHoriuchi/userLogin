@@ -15,7 +15,7 @@
         <h1 class="display-4"><%= title %></h1>
     </header>
     <div role="main">
-    <form method="post" action="/users">
+    <form method="post" action="/users/login">
         <div class="form-group">
             <label for="name">NAME</label>
             <input type="text" name="name" id="name" value="<%=form.name %>" class="form-control">
@@ -24,7 +24,14 @@
             <label for="passWord"">PASSWORD</label>
             <input type="passWord" name="passWord" id="passWord" value="<%=form.passWord %>" class="form-control">
         </div>
-        <input type="submit" value="作成" class="btn btn-primary">
-    </tr>
-</table>
-</form>
+        <input type="submit" value="ログイン" class="btn btn-primary">
+        </br>
+        </br>
+        <a href="/users/add" class="btn btn-primary">アカウントの作成</a>
+        </br>
+        </br>
+        <a href="/users/forget" class="btn btn-primary">パスワード不明の場合</a>
+    </form>
+    </div>
+</body>
+</html>

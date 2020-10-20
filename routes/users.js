@@ -5,13 +5,12 @@ var tokens = new csrf();
 let db = require('../models/index');
 
 
-router.get('/', (req, res, next) => {
+router.get('/login', (req, res, next) => {
   var secret = tokens.secretSync();
   var token = tokens.create(secret);
   req.session._csrf = secret;
   res.cookie('_csrf', token);
   req.session.now_url = "/";
-
   var data = {
       title:'User/Login',
       form:{name:'',password:''},
@@ -19,15 +18,8 @@ router.get('/', (req, res, next) => {
   res.render('users/login', data);
 });
 
-router.post('/', (req, res, next) => {
-  var request = req;
-  var response = res;
-  var token = req.cookies._csrf;
-  var secret = req.session._csrf;
-  if(tokens.verify(secret, token) === false)
-  {
-    throw new Error('Invalid Token');
-  }
+
+router.post('/login', (req, res, next) => {
   db.User.findOne({
     where:{
       name:req.body.name,
@@ -38,19 +30,19 @@ router.post('/', (req, res, next) => {
       req.session.login = usr;
       let back = req.session.back;
       if (back == null){
-        back = '/';
+        back = './home';
       }
       res.redirect(back);
     } else {
       var data = {
         title:'Users/Login',
-        content:'ログイン情報が間違っています。再度入力をお願いします。',
+        content:'名前かパスワードに問題があります。再度入力下さい。'
       }
-      console.log('data');
-      res.render('/users', data);
+      res.render('users/login', data);
     }
   })
 });
+
 
 router.get('/add',(req, res, next)=> {
   var secret = tokens.secretSync();
@@ -83,7 +75,7 @@ router.post('/add',(req, res, next)=> {
   db.sequelize.sync()
     .then(() => db.User.create(form)
     .then(usr=> {
-      res.redirect('/users')
+      res.redirect('/users/login')
     })
     .catch(err=> {
       var data = {
@@ -111,14 +103,14 @@ router.post('/edit',(req, res, next)=> {
   db.sequelize.sync()
   .then(() => db.User.update({
     name: req.body.name,
-    pass: req.body.passWord,
-    mail: req.body.mailAddress,
+    passWord: req.body.passWord,
+    mailAddress: req.body.mailAddress,
   },
   {
     where:{id:req.body.id}
   }))
   .then(usr => {
-    res.redirect('/users');
+    res.redirect('/users/edit');
   });
 });
 
@@ -143,6 +135,13 @@ router.post('/delete',(req, res, next)=> {
   });
 });
 
+router.get('/home',(req, res, next)=> {
+  if (req.session.login == null){
+    res.redirect('/users/login');
+  } else {
+    res.render('users/home');
+  }
+});
 
 
 

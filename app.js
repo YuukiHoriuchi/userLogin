@@ -28,6 +28,7 @@ var session_opt = {
 };
 
 app.use(session(session_opt));
+
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
