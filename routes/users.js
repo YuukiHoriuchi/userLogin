@@ -45,6 +45,13 @@ router.post('/login', (req, res, next) => {
   })
 });
 
+router.get('/home',(req, res, next)=> {
+  if (req.session.login == null){
+    res.redirect('/users/login');
+  } else {
+    res.render('users/home');
+  }
+});
 
 router.get('/add',(req, res, next)=> {
   var secret = tokens.secretSync();
@@ -136,15 +143,5 @@ router.post('/delete',(req, res, next)=> {
     res.redirect('/users/login');
   });
 });
-
-router.get('/home',(req, res, next)=> {
-  if (req.session.login == null){
-    res.redirect('/users/login');
-  } else {
-    res.render('users/home');
-  }
-});
-
-
 
 module.exports = router;
