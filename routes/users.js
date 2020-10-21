@@ -33,6 +33,9 @@ router.post('/login', (req, res, next) => {
         if(req.session.sessionUrl == '/users/home2') {
           console.log(req.session.sessionUrl);
           res.redirect('/users/home2');
+        } else if (req.session.sessionUrl == '/users/home3') {
+          console.log(req.session.sessionUrl);
+          res.redirect('/users/home3');
         } else {
           back = './home'
         }
@@ -77,7 +80,10 @@ router.post('/login2', (req, res, next) => {
         if(req.session.sessionUrl == '/users/home2') {
           console.log(req.session.sessionUrl);
           res.redirect('/users/home2');
-        } else {
+        }else if (req.session.sessionUrl == '/users/home3') {
+          console.log(req.session.sessionUrl);
+          res.redirect('/users/home3');
+        }else {
           back = './home'
         }
       }
@@ -115,6 +121,16 @@ router.get('/home2',(req, res, next)=> {
   req.session.sessionUrl="/users/home2";
   console.log(req.session.sessionUrl);
   res.render('users/home2');
+  }
+});
+
+router.get('/home3',(req, res, next)=> {
+  if (req.session.login == null){
+    res.redirect('/users/login2');
+  } else {
+  req.session.sessionUrl="/users/home3";
+  console.log(req.session.sessionUrl);
+  res.render('users/home3');
   }
 });
 
