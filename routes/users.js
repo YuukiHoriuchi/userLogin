@@ -10,12 +10,12 @@ router.get('/login', (req, res, next) => {
   var token = tokens.create(secret);
   req.session._csrf = secret;
   res.cookie('_csrf', token);
-  req.session.sessionUrl = "users/login";
   var data = {
       title:'User/Login',
       form:{name:'',password:''},
       content:'',
   }
+  console.log(req.session.sessionUrl);
   res.render('users/login', data);
 });
 
@@ -30,12 +30,17 @@ router.post('/login', (req, res, next) => {
       req.session.login = usr;
       let back = req.session.back;
       if (back == null){
-        back = './home';
+        if(req.session.sessionUrl == '/users/home2') {
+          console.log(req.session.sessionUrl);
+          res.redirect('/users/home2');
+        } else {
+          back = './home'
+        }
       }
       res.redirect(back);
     } else {
       var data = {
-        title:'User/Login/Miss',
+        title:'User/Login',
         content:'名前かパスワードに入力間違いがあります。再度入力下さい。',
         form:'',
       }
@@ -49,12 +54,12 @@ router.get('/login2', (req, res, next) => {
   var token = tokens.create(secret);
   req.session._csrf = secret;
   res.cookie('_csrf', token);
-  req.session.sessionUrl = "users/login2";
   var data = {
       title:'User/Login/Miss',
       form:{name:'',password:''},
       content:'不正ログインがありました。お手数ですがログインをしてください。',
   }
+  console.log(req.session.sessionUrl);
   res.render('users/login2', data);
 });
 
@@ -69,7 +74,12 @@ router.post('/login2', (req, res, next) => {
       req.session.login = usr;
       let back = req.session.back;
       if (back == null){
-        back = './home';
+        if(req.session.sessionUrl == '/users/home2') {
+          console.log(req.session.sessionUrl);
+          res.redirect('/users/home2');
+        } else {
+          back = './home'
+        }
       }
       res.redirect(back);
     } else {
@@ -83,7 +93,7 @@ router.post('/login2', (req, res, next) => {
   })
 });
 
-router.get("/logout", (req, res, next) => {
+router.get('/logout', (req, res, next) => {
   req.session.destroy();
   res.redirect("/users/login");
 });
@@ -92,7 +102,19 @@ router.get('/home',(req, res, next)=> {
   if (req.session.login == null){
     res.redirect('/users/login2');
   } else {
+    req.session.sessionUrl='/users/home';
+    console.log(req.session.sessionUrl);
     res.render('users/home');
+  }
+});
+
+router.get('/home2',(req, res, next)=> {
+  if (req.session.login == null){
+    res.redirect('/users/login2');
+  } else {
+  req.session.sessionUrl="/users/home2";
+  console.log(req.session.sessionUrl);
+  res.render('users/home2');
   }
 });
 
@@ -107,6 +129,7 @@ router.get('/add',(req, res, next)=> {
     form: new db.User(),
     err: null
   }
+  console.log(req.session.sessionUrl);
   res.render('users/add', data);
 });
 
@@ -198,6 +221,7 @@ router.get('/forget', (req, res, next) => {
     form:{name:'',passWord:'',mailAddress:''},
     content:'メールアドレスで認証してパスワードを変更します。',
   }
+  console.log(req.session.sessionUrl);
   res.render('users/forget', data);
 });
 router.post('/forget', (req, res, next) => {
