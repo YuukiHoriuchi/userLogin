@@ -19,7 +19,6 @@ router.get('/login', (req, res, next) => {
   res.render('users/login', data);
 });
 
-
 router.post('/login', (req, res, next) => {
   db.User.findOne({
     where:{
@@ -36,7 +35,7 @@ router.post('/login', (req, res, next) => {
       res.redirect(back);
     } else {
       var data = {
-        title:'User/Login',
+        title:'User/Login/Miss',
         content:'名前かパスワードに入力間違いがあります。再度入力下さい。',
         form:'',
       }
@@ -45,9 +44,53 @@ router.post('/login', (req, res, next) => {
   })
 });
 
+router.get('/login2', (req, res, next) => {
+  var secret = tokens.secretSync();
+  var token = tokens.create(secret);
+  req.session._csrf = secret;
+  res.cookie('_csrf', token);
+  req.session.sessionUrl = "users/login2";
+  var data = {
+      title:'User/Login/Miss',
+      form:{name:'',password:''},
+      content:'不正ログインがありました。お手数ですがログインをしてください。',
+  }
+  res.render('users/login2', data);
+});
+
+router.post('/login2', (req, res, next) => {
+  db.User.findOne({
+    where:{
+      name:req.body.name,
+      passWord:req.body.passWord,
+    }
+  }).then(usr=>{
+    if (usr != null) {
+      req.session.login = usr;
+      let back = req.session.back;
+      if (back == null){
+        back = './home';
+      }
+      res.redirect(back);
+    } else {
+      var data = {
+        title:'User/Login',
+        content:'入力間違いがあります。再度ログインしてください。',
+        form:'',
+      }
+      res.render('users/login2', data);
+    }
+  })
+});
+
+router.get("/logout", (req, res, next) => {
+  req.session.destroy();
+  res.redirect("/users/login");
+});
+
 router.get('/home',(req, res, next)=> {
   if (req.session.login == null){
-    res.redirect('/users/login');
+    res.redirect('/users/login2');
   } else {
     res.render('users/home');
   }

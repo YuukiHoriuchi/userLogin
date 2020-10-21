@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>ログイン完了</title>
+    <meta http-equiv="content-type" 
+    content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
     <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
+</head>
+  <body class="container">
     <h1>ログインに成功しています</h1>
+    </br>
+    </br>
+    <div class="form-group">
+    <form method="get" action="/users/logout">
+      <input type="submit" value="ログアウト" class="btn btn-primary">
+    </form>
+    </div>
   </body>
 </html>
 
