@@ -4,7 +4,6 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var usersRouter = require('./routes/users');
-var bodyParser = require('body-parser');
 var session = require('express-session');
 var validator = require('express-validator');
 
@@ -28,7 +27,6 @@ var session_opt = {
   cookie: { maxAge: 60 * 60 * 1000 }
 };
 app.use(session(session_opt));
-
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler

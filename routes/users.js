@@ -62,7 +62,7 @@ router.get('/add',(req, res, next)=> {
   var data = {
     title: 'Users/Add',
     form: new db.User(),
-    err:null
+    err: null
   }
   res.render('users/add', data);
 });
