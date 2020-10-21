@@ -4,7 +4,6 @@ var csrf = require('csrf');
 var tokens = new csrf();
 let db = require('../models/index');
 
-
 router.get('/login', (req, res, next) => {
   var secret = tokens.secretSync();
   var token = tokens.create(secret);
@@ -15,6 +14,8 @@ router.get('/login', (req, res, next) => {
     form:{name:'',password:''},
     content:'',
   }
+  console.log(token);
+  console.log(secret);
   console.log(req.session.sessionUrl);
   res.render('users/login', data);
 });
