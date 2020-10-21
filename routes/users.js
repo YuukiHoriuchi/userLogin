@@ -25,6 +25,8 @@ router.get('/login', (req, res, next) => {
 router.post('/login', (req, res, next) => {
   var token = req.cookies._csrf;
   var secret = req.session._csrf;
+  // 取得したtokenをverify（確認）して同じであればpostメソッドを実行する。
+  // 確認が完了したtokenは確認した時点で破棄する。
   if(tokens.verify(secret, token) === false)
   {
     throw new Error('Invalid Token');
@@ -190,53 +192,6 @@ router.post('/add',(req, res, next)=> {
       res.render('users/add', data);
     })
     )
-});
-
-router.get('/edit',(req, res, next)=> {
-  db.User.findByPk(req.query.id)
-  .then(usr => {
-    var data = {
-      title: 'Users/Edit',
-      form: usr
-    }
-    res.render('users/edit', data);
-  });
-});
-
-router.post('/edit',(req, res, next)=> {
-  db.sequelize.sync()
-  .then(() => db.User.update({
-    name: req.body.name,
-    passWord: req.body.passWord,
-    mailAddress: req.body.mailAddress,
-  },
-  {
-    where:{id:req.body.id}
-  }))
-  .then(usr => {
-    res.redirect('/users/login');
-  });
-});
-
-router.get('/delete',(req, res, next)=> {
-  db.User.findByPk(req.query.id)
-  .then(usr => {
-    var data = {
-      title: 'Users/Delete',
-      form: usr
-    }
-    res.render('users/delete', data);
-  });
-});
-
-router.post('/delete',(req, res, next)=> {
-  db.sequelize.sync()
-  .then(() => db.User.destroy({
-    where:{id:req.body.id}
-  }))
-  .then(usr => {
-    res.redirect('/users/login');
-  });
 });
 
 router.get('/forget', (req, res, next) => {
