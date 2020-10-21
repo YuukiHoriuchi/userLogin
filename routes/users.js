@@ -5,7 +5,9 @@ var tokens = new csrf();
 let db = require('../models/index');
 
 router.get('/login', (req, res, next) => {
+  // secretはサーバー保持（session保持）
   var secret = tokens.secretSync();
+  // tokenは（cookieで返却）クライアント返却
   var token = tokens.create(secret);
   req.session._csrf = secret;
   res.cookie('_csrf', token);
@@ -21,6 +23,12 @@ router.get('/login', (req, res, next) => {
 });
 
 router.post('/login', (req, res, next) => {
+  var token = req.cookies._csrf;
+  var secret = req.session._csrf;
+  if(tokens.verify(secret, token) === false)
+  {
+    throw new Error('Invalid Token');
+  }
   db.User.findOne({
     where:{
       name:req.body.name,
@@ -68,6 +76,12 @@ router.get('/login2', (req, res, next) => {
 });
 
 router.post('/login2', (req, res, next) => {
+  var token = req.cookies._csrf;
+  var secret = req.session._csrf;
+  if(tokens.verify(secret, token) === false)
+  {
+    throw new Error('Invalid Token');
+  }
   db.User.findOne({
     where:{
       name:req.body.name,
