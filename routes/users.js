@@ -50,6 +50,7 @@ router.post('/login', (req, res, next) => {
         } else {
           back = './home'
         }
+
       }
       res.redirect(back);
     } else {
@@ -157,6 +158,10 @@ router.get('/add',(req, res, next)=> {
   req.session._csrf = secret;
   res.cookie('_csrf', token);
   req.session.sessionUrl="/users/add";
+
+  console.log(`get token: ${token}`);
+  console.log(`get secret: ${secret}`);
+
   var data = {
     title: 'Users/Add',
     form: new db.User(),
@@ -169,6 +174,9 @@ router.get('/add',(req, res, next)=> {
 router.post('/add',(req, res, next)=> {
   var token = req.cookies._csrf;
   var secret = req.session._csrf;
+  console.log(`post token: ${token}`);
+  console.log(`post secret: ${secret}`);
+
   if(tokens.verify(secret, token) === false)
   {
     throw new Error('Invalid Token');
@@ -178,8 +186,7 @@ router.post('/add',(req, res, next)=> {
     passWord: req.body.passWord,
     mailAddress: req.body.mailAddress,
   };
-  db.sequelize.sync()
-    .then(() => db.User.create(form)
+  db.User.create(form)
     .then(usr=> {
       res.redirect('/users/login')
     })
@@ -190,8 +197,8 @@ router.post('/add',(req, res, next)=> {
         err: err
       }
       res.render('users/add', data);
-    })
-    )
+    });
+  a =  1;
 });
 
 router.get('/forget', (req, res, next) => {
