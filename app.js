@@ -30,7 +30,7 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 // Body-Parserを基にExpressに組み込まれた機能。クライアントから送信されたデータを、req.body経由で会得、操作するために使用
 app.use(express.json());
-// 
+//
 // https://qiita.com/takehilo/items/d17eb5e077543bbaca25
 // expressで使用するurlエンコードの拡張機能を使用しない
 app.use(express.urlencoded({ extended: false }));
@@ -45,7 +45,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // https://www.wakuwakubank.com/posts/633-nodejs-express-validator/
 app.use(validator());
 
-//　セッションの設定
+// セッションの設定
 var session_opt = {
   secret: 'keyboard cat',
   resave: false,
