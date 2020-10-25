@@ -37,9 +37,11 @@ router.post('/login', (req, res, next) => {
       passWord:req.body.passWord,
     }
   }).then(usr=>{
+    // usr != null でいいのか？
     if (usr != null) {
       req.session.login = usr;
       let back = req.session.back;
+      // homeのページ数を増やしているだけ。※繰り返し処理はしないこと
       if (back == null){
         if(req.session.sessionUrl == '/users/home2') {
           console.log(req.session.sessionUrl);
@@ -48,6 +50,7 @@ router.post('/login', (req, res, next) => {
           console.log(req.session.sessionUrl);
           res.redirect('/users/home3');
         } else {
+          // 遷移先が重複しているため表示はされるがエラーとなっている可能性がある
           back = './home'
         }
 
