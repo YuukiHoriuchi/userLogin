@@ -1,9 +1,16 @@
 // HTTPエラーの対処を行うために必要な変数
 var createError = require('http-errors');
 
+<<<<<<< HEAD
 // express本体
 var express = require('express');
 
+=======
+// express本体をexpress変数に代入
+var express = require('express');
+
+// Node.jsに組み込まれている標準モジュールのpathモジュールを読み込む
+>>>>>>> main
 // ファイルパスを扱うための変数
 var path = require('path');
 
@@ -37,7 +44,7 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 // Body-Parserを基にExpressに組み込まれた機能。クライアントから送信されたデータを、req.body経由で会得、操作するために使用
 app.use(express.json());
-//
+
 // https://qiita.com/takehilo/items/d17eb5e077543bbaca25
 // expressで使用するurlエンコードの拡張機能を使用しない
 app.use(express.urlencoded({ extended: false }));
@@ -52,7 +59,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // https://www.wakuwakubank.com/posts/633-nodejs-express-validator/
 app.use(validator());
 
-// セッションの設定
+// クッキーの設定
 var session_opt = {
   secret: 'keyboard cat',
   resave: false,

@@ -41,19 +41,15 @@ router.post('/login', (req, res, next) => {
     if (usr != null) {
       req.session.login = usr;
       let back = req.session.back;
-      // homeのページ数を増やしているだけ。※繰り返し処理はしないこと
-      if (back == null){
-        if(req.session.sessionUrl == '/users/home2') {
+      // 指摘：homeのページ数を増やしているだけなので改善すること。※繰り返し処理はしないこと
+      if (back === null){
+        if(req.session.sessionUrl === req.session.sessionUrl) {
           console.log(req.session.sessionUrl);
-          res.redirect('/users/home2');
-        } else if (req.session.sessionUrl == '/users/home3') {
-          console.log(req.session.sessionUrl);
-          res.redirect('/users/home3');
+          res.redirect(req.session.sessionUrl);
         } else {
           // 遷移先が重複しているため表示はされるがエラーとなっている可能性がある
           back = './home'
         }
-
       }
       res.redirect(back);
     } else {
