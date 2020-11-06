@@ -1,17 +1,24 @@
 // HTTPエラーの対処を行うために必要な変数
 var createError = require('http-errors');
+
 // express本体
 var express = require('express');
+
 // ファイルパスを扱うための変数
 var path = require('path');
+
 // クッキーのパース（値を変換する処理）に関する変数
 var cookieParser = require('cookie-parser');
+
 // HTTPリクエストのログ出力に関する変数
 var logger = require('morgan');
+
 // ルーツフォルダの中のファイルをモジュールとしてロードするための変数
 var usersRouter = require('./routes/users');
+
 // express-sessionを呼び出すための変数
 var session = require('express-session');
+
 //express-validatorを呼び出すための変数
 var validator = require('express-validator');
 
