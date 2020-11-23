@@ -53,15 +53,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 // https://www.wakuwakubank.com/posts/633-nodejs-express-validator/
 app.use(validator());
 
-// クッキーの設定
-var session_opt = {
-  secret: 'keyboard cat',
+app.use(session({
+  //暗号化に利用するキーを設定
+  secret: 'secret key',
+  //毎回セッションを作成しない
   resave: false,
+  //未初期化状態のセッションを保存しない
   saveUninitialized: false,
-  cookie: { maxAge: 60 * 60 * 1000 }
-};
-app.use(session(session_opt));
-
+  cookie: {
+    //生存期間は3日
+    maxAge: 3 * 24 * 60 * 1000,
+    //httpsを使用しない
+    secure: false
+  }
+}));
 // usersRouterを使用する
 app.use('/users', usersRouter);
 

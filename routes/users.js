@@ -31,27 +31,27 @@ router.post('/login', (req, res, next) => {
   {
     throw new Error('Invalid Token');
   }
+  //使用済みの秘密文字を削除する
+  delete req.session._csrf;
+  //使用済みのトークンを削除する
+  res.clearCookie('_csrf');
+
   db.User.findOne({
     where:{
       name:req.body.name,
       passWord:req.body.passWord,
     }
   }).then(usr=>{
-    // usr != null でいいのか？
-    if (usr != null) {
+    if (usr !== undefined) {
       req.session.login = usr;
       let back = req.session.back;
-      // 指摘：homeのページ数を増やしているだけなので改善すること。※繰り返し処理はしないこと
-      if (back === null){
-        if(req.session.sessionUrl === req.session.sessionUrl) {
-          console.log(req.session.sessionUrl);
-          res.redirect(req.session.sessionUrl);
-        } else {
-          // 遷移先が重複しているため表示はされるがエラーとなっている可能性がある
+      if (back !== undefined){
+        console.log(req.session.sessionUrl);
+        res.redirect(req.session.sessionUrl);
+      } else {
           back = './home'
-        }
+          res.redirect(back);
       }
-      res.redirect(back);
     } else {
       var data = {
         title:'User/Login',
@@ -63,58 +63,6 @@ router.post('/login', (req, res, next) => {
   })
 });
 
-router.get('/login2', (req, res, next) => {
-  var secret = tokens.secretSync();
-  var token = tokens.create(secret);
-  req.session._csrf = secret;
-  res.cookie('_csrf', token);
-  var data = {
-    title:'User/Login/Miss',
-    form:{name:'',password:''},
-    content:'不正ログインがありました。お手数ですがログインをしてください。',
-  }
-  console.log(req.session.sessionUrl);
-  res.render('users/login2', data);
-});
-
-router.post('/login2', (req, res, next) => {
-  var token = req.cookies._csrf;
-  var secret = req.session._csrf;
-  if(tokens.verify(secret, token) === false)
-  {
-    throw new Error('Invalid Token');
-  }
-  db.User.findOne({
-    where:{
-      name:req.body.name,
-      passWord:req.body.passWord,
-    }
-  }).then(usr=>{
-    if (usr != null) {
-      req.session.login = usr;
-      let back = req.session.back;
-      if (back == null){
-        if(req.session.sessionUrl == '/users/home2') {
-          console.log(req.session.sessionUrl);
-          res.redirect('/users/home2');
-        }else if (req.session.sessionUrl == '/users/home3') {
-          console.log(req.session.sessionUrl);
-          res.redirect('/users/home3');
-        }else {
-          back = './home'
-        }
-      }
-      res.redirect(back);
-    } else {
-      var data = {
-        title:'User/Login',
-        content:'入力間違いがあります。再度ログインしてください。',
-        form:'',
-      }
-      res.render('users/login2', data);
-    }
-  })
-});
 
 router.get('/logout', (req, res, next) => {
   req.session.destroy();
@@ -123,7 +71,8 @@ router.get('/logout', (req, res, next) => {
 
 router.get('/home',(req, res, next)=> {
   if (req.session.login == null){
-    res.redirect('/users/login2');
+    req.session.sessionUrl='/users/home';
+    res.redirect('/users/login');
   } else {
     req.session.sessionUrl='/users/home';
     console.log(req.session.sessionUrl);
@@ -133,7 +82,8 @@ router.get('/home',(req, res, next)=> {
 
 router.get('/home2',(req, res, next)=> {
   if (req.session.login == null){
-    res.redirect('/users/login2');
+    req.session.sessionUrl="/users/home2";
+    res.redirect('/users/login');
   } else {
     req.session.sessionUrl="/users/home2";
     console.log(req.session.sessionUrl);
@@ -143,7 +93,8 @@ router.get('/home2',(req, res, next)=> {
 
 router.get('/home3',(req, res, next)=> {
   if (req.session.login == null){
-    res.redirect('/users/login2');
+    req.session.sessionUrl="/users/home3";
+    res.redirect('/users/login');
   } else {
     req.session.sessionUrl="/users/home3";
     console.log(req.session.sessionUrl);
@@ -152,11 +103,12 @@ router.get('/home3',(req, res, next)=> {
 });
 
 router.get('/add',(req, res, next)=> {
+  // secretはサーバー保持（session保持）
   var secret = tokens.secretSync();
+  // tokenは（cookieで返却）クライアント返却
   var token = tokens.create(secret);
   req.session._csrf = secret;
   res.cookie('_csrf', token);
-  req.session.sessionUrl="/users/add";
 
   console.log(`get token: ${token}`);
   console.log(`get secret: ${secret}`);
@@ -173,13 +125,16 @@ router.get('/add',(req, res, next)=> {
 router.post('/add',(req, res, next)=> {
   var token = req.cookies._csrf;
   var secret = req.session._csrf;
-  console.log(`post token: ${token}`);
-  console.log(`post secret: ${secret}`);
-
+  // 取得したtokenをverify（確認）して同じであればpostメソッドを実行する。
+  // 確認が完了したtokenは確認した時点で破棄する。
   if(tokens.verify(secret, token) === false)
   {
     throw new Error('Invalid Token');
   }
+  //使用済みの秘密文字を削除する
+  delete req.session._csrf;
+  //使用済みのトークンを削除する
+  res.clearCookie('_csrf');
   const form = {
     name: req.body.name,
     passWord: req.body.passWord,
@@ -219,13 +174,16 @@ router.post('/forget', (req, res, next) => {
   var response = res;
   var token = req.cookies._csrf;
   var secret = req.session._csrf;
+  // 取得したtokenをverify（確認）して同じであればpostメソッドを実行する。
+  // 確認が完了したtokenは確認した時点で破棄する。
   if(tokens.verify(secret, token) === false)
   {
     throw new Error('Invalid Token');
   }
-  req.check('name','名前 は必ず入力して下さい。').notEmpty();
-  req.check('passWord','パスワード は必ず入力して下さい。').notEmpty();
-  req.check('mailAddress','メールアドレス は必ず入力して下さい。').notEmpty();
+  //使用済みの秘密文字を削除する
+  delete req.session._csrf;
+  //使用済みのトークンを削除する
+  res.clearCookie('_csrf');
   req.getValidationResult().then((result) => {
     if (!result.isEmpty()) {
       var content = '';
